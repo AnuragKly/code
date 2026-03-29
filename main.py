@@ -21,9 +21,9 @@ from shared import (
     MIRROR, CONFIDENCE, FPS_SMOOTH,
     load_custom_signs, detect_gesture, draw_skeleton, draw_panel, center_text,
 )
-from mode_game  import GameMode
-from mode_free  import FreeMode
-from mode_teach import TeachMode
+from modegame  import GameMode
+from modefree  import FreeMode
+from modeteach import TeachMode
 
 
 # ─── App-level states ─────────────────────────────────
