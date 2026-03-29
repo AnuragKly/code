@@ -130,8 +130,24 @@ def classify_custom(feature, custom_signs):
     neighbours = []
     for label, samples in custom_signs.items():
         for s in samples:
-            d = float(np.linalg.norm(feat - np.array(s, dtype=np.float32)))
-            neighbours.append((d, label))
+            s_arr = np.array(s, dtype=np.float32)
+
+        # Handle shape mismatch
+        if feat.shape != s_arr.shape:
+            # Convert feat (63 → 42) if needed
+            if feat.shape[0] == 63 and s_arr.shape[0] == 42:
+                feat_use = feat.reshape(-1, 3)[:, :2].flatten()
+            # Convert s (42 → 63) if needed
+            elif feat.shape[0] == 42 and s_arr.shape[0] == 63:
+                s_arr = s_arr.reshape(-1, 3)[:, :2].flatten()
+                feat_use = feat
+            else:
+                continue  # skip incompatible data
+        else:
+            feat_use = feat
+
+        d = float(np.linalg.norm(feat_use - s_arr))
+        neighbours.append((d, label))
 
     if not neighbours:
         return None, 0.0
@@ -180,13 +196,14 @@ def detect_builtin_gesture(landmarks, is_right_hand: bool):
     pinky_open  = tip_above_pip(20, 18)
     fingers     = [index_open, middle_open, ring_open, pinky_open]
 
-    if not any(fingers) and not thumb_open:                                                return "✊ FIST"
-    if all(fingers) and thumb_open:                                                        return "🖐 OPEN"
-    if index_open and not middle_open and not ring_open and not pinky_open:                return "☝ POINT"
-    if index_open and middle_open and not ring_open and not pinky_open:                    return "✌ PEACE"
-    if index_open and middle_open and ring_open and not pinky_open:                        return "3 FINGERS"
-    if thumb_open and pinky_open and not index_open and not middle_open and not ring_open: return "🤙 CALL ME"
-    if thumb_open and not index_open and not middle_open and not ring_open and not pinky_open: return "👍 THUMBS UP"
+    if not any(fingers) and not thumb_open:                                                return "FIST"
+    if all(fingers) and thumb_open:                                                        return "OPEN"
+    if index_open and not middle_open and not ring_open and not pinky_open:                return "POINT"
+    if index_open and middle_open and not ring_open and not pinky_open:                    return "PEACE"
+    if index_open and middle_open and ring_open and not pinky_open:                        return "FINGERS"
+    if thumb_open and pinky_open and not index_open and not middle_open and not ring_open: return "CALL ME"
+    if thumb_open and not index_open and not middle_open and not ring_open and not pinky_open: return "THUMBS UP"
+    if not index_open and not ring_open and not pinky_open and middle_open and not thumb_open: return "FUCK YOU"
     return None
 
 
