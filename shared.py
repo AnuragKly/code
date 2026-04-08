@@ -54,12 +54,12 @@ FINGER_COLORS = {
 }
 
 BUILT_IN_GESTURES = [
-    "✊ FIST",
-    "🖐 OPEN",
-    "☝ POINT",
-    "✌ PEACE",
-    "👍 THUMBS UP",
-    "🤙 CALL ME",
+    "FIST",
+    "OPEN",
+    "POINT",
+    "PEACE",
+    "THUMBS UP",
+    "CALL ME",
     "3 FINGERS",
 ]
 

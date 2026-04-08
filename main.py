@@ -34,6 +34,7 @@ from shared import (
 from modegame  import GameMode
 from modefree  import FreeMode
 from modeteach import TeachMode
+from modetranslate import TranslateMode
 
 
 # ─── App-level states ─────────────────────────────────
@@ -41,7 +42,7 @@ ST_MENU  = "MENU"
 ST_GAME  = "GAME"
 ST_FREE  = "FREE"
 ST_TEACH = "TEACH"
-
+ST_TRANSLATE = "TRANSLATE"
 
 # ════════════════════════════════════════════════════
 #  MAIN MENU DRAWING
@@ -140,8 +141,9 @@ def main():
     game_mode  = GameMode()
     free_mode  = FreeMode()
     teach_mode = TeachMode()
+    translate_mode = TranslateMode()
 
-    print("   1 = Game   2 = Free   3 = Teach   Q = quit\n")
+    print("   1 = Game   2 = Free   3 = Teach   4 = Translate   Q = quit\n")
 
     while True:
         t_frame_start = time.time()
@@ -208,7 +210,12 @@ def main():
                 state = ST_FREE
             elif key == ord('3'):
                 gesture_buf.reset()
-                state = ST_TEACH
+                state = ST_TEACH 
+            elif key == ord('4'):
+                gesture_buf.reset()
+                translate_mode.reset()
+                state = ST_TRANSLATE
+
 
         elif state == ST_GAME:
             result = game_mode.update(frame, smoothed_label, smoothed_conf)
@@ -232,6 +239,13 @@ def main():
             if result == "MAIN_MENU":
                 # Sync updated custom signs to game mode
                 game_mode.set_custom_signs(custom_signs)
+                gesture_buf.reset()
+                state = ST_MENU
+        elif state == ST_TRANSLATE:
+            result = translate_mode.update(
+                frame, smoothed_label, smoothed_conf
+            )
+            if result == "MAIN_MENU":
                 gesture_buf.reset()
                 state = ST_MENU
 
